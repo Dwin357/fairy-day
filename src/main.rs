@@ -1,22 +1,11 @@
 use rust_sc2::prelude::*;
+//use crate::early_experiments::ex_1::*; // Ex1
+use crate::early_experiments::feedback_loop::*; // FeedbackLoop1
 
-#[bot]
-#[derive(Default)]
-struct WorkerRush;
-impl Player for WorkerRush {
-    fn get_player_settings(&self) -> PlayerSettings {
-        PlayerSettings::new(Race::Protoss)
-    }
-    fn on_start(&mut self) -> SC2Result<()> {
-        for worker in &self.units.my.workers {
-            worker.attack(Target::Pos(self.enemy_start), false);
-        }
-        Ok(())
-    }
-}
+pub mod early_experiments;
 
 fn main() -> SC2Result<()> {
-    let mut bot = WorkerRush::default();
+    let mut bot = FeedbackLoop::default();
     run_vs_computer(
         &mut bot,
         Computer::new(Race::Random, Difficulty::Medium, None),

@@ -1,3 +1,57 @@
+2023.10.17:1935
+    Was having a think the other day, and I think I have an idea for how I want to drive this forward
+
+    x copy paste, "speed mining" into a feedback loop
+    x have it auto abort after 1000 frames
+    x print minerals every 10 frames
+    - add logic to build workers (if supply & min & larva avail) => this should be its own method
+    - add logic to build overlord (if min & larva avail & one isn't already building) => this should be its own method, called if currently supply blocked
+    ~~~
+    - pull mining logic into an executor class
+    - pull supply logic into an executor class
+    - pull condition-checks into an adjudicator class
+    - pull assignment logic into a manager class
+
+2023.10.14:2321
+    kind of tired, probably not the best circumstances to be touching code, but I think I am good enough to sketch out a game plan that I can try to implement tomorrow.
+
+    In my MVP impl I want...
+    Bot:on_setup {init.eco_manager, init.adjudicator}
+    Bod:on_step {
+        let mut all_requests = {}
+        all_requests.put("eco-req", eco_manager.req())
+        all_requests.put("eco-happy", eco_manager.eval())
+        adjudicator.prioritize_and_dispatch(all_requests)
+    }
+    ------
+    ref: https://stackoverflow.com/questions/36249693/whats-the-most-efficient-way-to-insert-an-element-into-a-sorted-vector
+    adjudicator:prioritize_and_dispatch(all_req) {
+        let mut prioritized_req = binary-heap
+
+        // this logic is repeated for all managers
+        let eco_discount =  calc_discount(all_req.get("eco-happy")) // maybe later this is also modified by game-state
+        for req in all_req.get("eco-req") {
+            prioritized_req.add(apply_discount(eco_discount, req.weight), req)
+        }
+
+        // back to everyone code
+        let ordered_req = prioritized_req.into_sorted_vec()
+        let mut avail_resources = {open-supply:xx, min:xx, gas:xx, larva:xx ...}
+        for req in ordered_req {
+            if req.can_fulfill(avail_resources)
+                avail_resources.debit(req)
+                req.approve()
+            else
+                req.decline()
+        }
+
+    }
+            
+                
+
+2023.10.13:2113
+    *sweat-smile* - Everything is harrder than you think it should be at first, but I now have the ability to do a bunch of early experiments w/out overwriting previous ones.
+
 2023.10.13:2024
     My first couple of challenges
     - figure out how to move the camera

@@ -1,8 +1,9 @@
 use rust_sc2::prelude::*;
 
+// The original hello-world bot I copy-pasted
 #[bot]
 #[derive(Default)]
-struct WorkerRush;
+pub struct WorkerRush;
 impl Player for WorkerRush {
     fn get_player_settings(&self) -> PlayerSettings {
         PlayerSettings::new(Race::Protoss)
